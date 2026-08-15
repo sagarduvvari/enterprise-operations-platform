@@ -1,6 +1,7 @@
 package com.eop.backend.service;
 
 import com.eop.backend.dto.CreateUserRequest;
+import com.eop.backend.dto.UpdateUserRequest;
 import com.eop.backend.dto.UserResponse;
 import com.eop.backend.entity.User;
 import com.eop.backend.exception.UserNotFoundException;
@@ -64,5 +65,33 @@ public class UserService {
             user.getEmail(),
             user.getCreatedAt()
         );
+    }
+
+    @Transactional
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.update(
+            request.firstName(),
+            request.lastName(),
+            request.email()
+        );
+
+        return new UserResponse(
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail(),
+            user.getCreatedAt()
+        );
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException(id));
+
+        userRepository.delete(user);
     }
 }
